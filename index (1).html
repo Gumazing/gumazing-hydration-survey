@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gumazing Hydration – Claim Your 15% Discount</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+    /* Background video layer */
+    .bg-wrap { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: #000; }
+    .bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.18; filter: saturate(0.9) contrast(1.05) brightness(0.9); }
+    .bg-overlay { position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(0,0,0,0.35), rgba(0,0,0,0.85)); }
+    .bg-texture {
+      position: absolute; inset: 0; opacity: 0.12; mix-blend-mode: overlay;
+      background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 3px);
+    }
+
+    body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: stretch; }
+
+    .app { position: relative; z-index: 1; width: 100%; max-width: 1200px; min-height: 100vh; padding: 18px 16px 32px; display: flex; flex-direction: column; margin: 0 auto; }
+
+    .top-bar { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 8px; gap: 12px; }
+    .logo-img { height: 60px; width: auto; object-fit: contain; }
+    /* Shown only if the logo image fails to load */
+    .logo-text { font-size: 1.5rem; font-weight: 900; letter-spacing: 0.08em; color: #fff; line-height: 60px; }
+    .logo-text span { font-weight: 400; letter-spacing: 0.18em; }
+    /* To force the logo to pure white, add this inside .logo-img:  filter: brightness(0) invert(1); */
+    .content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+
+    .highlight { color: #ffffff; font-weight: 800; }
+
+    h1 { font-size: 1.9rem; line-height: 1.1; text-transform: uppercase; margin-top: 16px; margin-bottom: 10px; }
+    h2 { font-size: 1.4rem; text-transform: uppercase; margin-bottom: 10px; }
+
+    p { font-size: 1.08rem; line-height: 1.55; color: #e0e0e0; margin-bottom: 10px; }
+
+    .card { background: #070707; border-radius: 24px; padding: 22px 18px 26px; box-shadow: 0 12px 30px rgba(0,0,0,0.6); border: 1px solid #202020; width: min(800px, 100% - 32px); margin: 18px auto 0; }
+
+    .subtitle { font-size: 1rem; text-transform: uppercase; font-weight: 800; color: #ffffff; margin-bottom: 8px; letter-spacing: 0.06em; }
+
+    .button-primary, .button-secondary {
+      width: 100%; border-radius: 999px; padding: 14px 20px; border: none; font-size: 1rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; margin-top: 10px;
+      transition: transform 0.12s ease, filter 0.12s ease, opacity 0.12s ease;
+    }
+    .button-primary { background: #ff9f4a; color: #000; border: 2px solid #ff9f4a; }
+    .button-primary:active { transform: translateY(1px); filter: brightness(0.92); }
+    .button-primary[disabled]{ opacity: 0.6; cursor: not-allowed; transform: none; filter: none; }
+    .button-secondary { background: transparent; color: #ff9f4a; border: 2px solid #ff9f4a; }
+    .button-secondary:active { transform: translateY(1px); filter: brightness(0.92); }
+
+    .footer-note { text-align: center; font-size: 0.85rem; color: #b5b5b5; margin-top: 16px; }
+    .input-group { margin-top: 12px; }
+
+    label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: #aaaaaa; display: block; margin-bottom: 6px; }
+    .optional { text-transform: none; letter-spacing: 0; color: #777; }
+
+    input { width: 100%; border-radius: 999px; border: 1px solid #333; background: #111; color: #fff; padding: 12px 14px; font-size: 1.05rem; outline: none; }
+    input:focus { border-color: #ffffff; }
+
+    .steps-indicator { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+    .dot { width: 7px; height: 7px; border-radius: 999px; background: #333; }
+    .dot.active { background: #ffffff; }
+
+    .hidden { display: none !important; }
+    .center { text-align: center; }
+
+    .error { color: #ff6b6b; font-size: 0.95rem; margin-top: 8px; min-height: 1em; }
+
+    .consent-row { margin-top: 10px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem; color: #b5b5b5; }
+    .consent-row input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: #ff9f4a; }
+    .consent-row label { text-transform: none; letter-spacing: 0; font-size: 0.95rem; color: #b5b5b5; }
+
+    .phone-row { display: flex; gap: 8px; }
+
+    #countryCode {
+      background: #000; color: #ffffff; border: 1px solid #333; padding: 12px 14px; border-radius: 999px;
+      font-size: 1rem; width: 170px; appearance: none; outline: none;
+    }
+    #countryCode:focus { border-color: #ffffff; }
+    #countryCode option { background: #000; color: #ffffff; }
+
+    @media (min-width: 768px) {
+      .app { padding: 24px 24px 40px; }
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 1.8rem; }
+      p { font-size: 1.12rem; }
+    }
+
+    button, select, input, label { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+    /* Discount badge on the first screen */
+    .discount-badge {
+      display: inline-flex; align-items: baseline; gap: 8px; margin: 6px 0 14px;
+      border: 2px solid #ffffff; border-radius: 999px; padding: 8px 18px;
+      font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .discount-badge .big { font-size: 1.6rem; }
+    .discount-badge .small { font-size: 0.95rem; color: #e0e0e0; }
+
+    /* Coupon screen */
+    .counter-banner { margin-top: 10px; padding: 10px 12px; border-radius: 14px; border: 1px solid #2a2a2a; background: #0b0b0b; color: #eaeaea; font-size: 0.95rem; }
+    .counter-banner b { color: #ffffff; }
+
+    .coupon {
+      position: relative; margin-top: 14px; border: 2px dashed #ffffff; border-radius: 20px;
+      padding: 22px 16px 18px; background: #0b0b0b; text-align: center;
+    }
+    .coupon::before, .coupon::after {
+      content: ""; position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%;
+      background: #070707; border: 2px dashed #ffffff; transform: translateY(-50%);
+    }
+    .coupon::before { left: -13px; border-left-color: transparent; border-bottom-color: transparent; transform: translateY(-50%) rotate(45deg); }
+    .coupon::after  { right: -13px; border-right-color: transparent; border-top-color: transparent; transform: translateY(-50%) rotate(45deg); }
+
+    .coupon-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.14em; color: #bdbdbd; font-weight: 800; }
+    .coupon-name { font-size: 1.7rem; font-weight: 900; text-transform: uppercase; margin: 6px 0 10px; word-break: break-word; }
+    .coupon-amount { font-size: 3.4rem; line-height: 1; font-weight: 900; letter-spacing: -0.02em; }
+    .coupon-amount span { font-size: 1.4rem; letter-spacing: 0.06em; margin-left: 6px; }
+    .coupon-meta { display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px; margin-top: 16px; text-align: left; font-size: 1.02rem; color: #eaeaea; }
+    .coupon-meta .k { color: #a8a8a8; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.08em; align-self: center; }
+    .coupon-meta .v { font-weight: 700; word-break: break-word; }
+
+    @media (min-width: 768px) {
+      .coupon-name { font-size: 2.1rem; }
+      .coupon-amount { font-size: 4.4rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background Video -->
+  <div class="bg-wrap" aria-hidden="true">
+    <video class="bg-video" autoplay muted loop playsinline preload="auto">
+      <source src="videos/video.webm" type="video/webm" />
+    </video>
+    <div class="bg-overlay"></div>
+    <div class="bg-texture"></div>
+  </div>
+
+  <div class="app">
+    <header class="top-bar">
+      <img src="images/Hydration%20Logo%20white%201.png" alt="Gumazing Hydration" class="logo-img"
+           onerror="this.style.display='none'; document.getElementById('logoText').style.display='block';" />
+      <div id="logoText" class="logo-text" style="display:none;">GUMAZING <span>HYDRATION</span></div>
+    </header>
+
+    <main class="content">
+      <!-- STEP 1: Welcome -->
+      <section id="step1">
+        <div class="card">
+          <div>
+            <p class="subtitle">SIP STRONG, STAY AMAZING!</p>
+            <h1>CLAIM YOUR 15% DISCOUNT</h1>
+            <div class="discount-badge"><span class="big">15% OFF</span></div>
+            <p>Fill in this quick form and get <span class="highlight">15% off</span> your Gumazing Hydration purchase.</p>
+            <p>It takes less than a minute.</p>
+          </div>
+
+          <div>
+            <button class="button-primary" id="startBtn">Claim Now</button>
+          </div>
+        </div>
+
+        <div class="steps-indicator">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </section>
+
+      <!-- STEP 2: Details -->
+      <section id="step2" class="hidden">
+        <div class="card">
+          <div>
+            <p class="subtitle">Almost there</p>
+            <h2>TELL US ABOUT YOURSELF</h2>
+            <p>Enter your details to unlock your 15% discount.</p>
+
+            <div class="input-group">
+              <label for="name">Name</label>
+              <input id="name" type="text" autocomplete="off" />
+            </div>
+
+            <div class="input-group">
+              <label for="phone">Mobile Number</label>
+              <div class="phone-row">
+                <select id="countryCode" aria-label="Country code"></select>
+                <input id="phone" type="tel" placeholder="Phone number" autocomplete="off" />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="email">Email Address</label>
+              <input id="email" type="email" autocomplete="off" />
+            </div>
+
+            <div class="input-group">
+              <label for="company">Company <span class="optional">(optional)</span></label>
+              <input id="company" type="text" autocomplete="off" />
+            </div>
+
+            <div class="consent-row">
+              <input type="checkbox" id="consent" />
+              <label for="consent">
+                By tapping "Confirm Your Coupon" I confirm that I have subscribed to receive emails.
+              </label>
+            </div>
+
+            <div class="error" id="formError"></div>
+          </div>
+
+          <div>
+            <button class="button-primary" id="confirmCouponBtn">Confirm Your Coupon</button>
+            <button class="button-secondary" id="backToWelcomeBtn">Back</button>
+          </div>
+        </div>
+
+        <div class="steps-indicator">
+          <div class="dot"></div>
+          <div class="dot active"></div>
+          <div class="dot"></div>
+        </div>
+      </section>
+
+      <!-- STEP 3: Coupon -->
+      <section id="couponScreen" class="hidden">
+        <div class="card center">
+          <div>
+            <p class="subtitle">Coupon Confirmed ✅</p>
+            <h2 id="couponTitle">Your 15% Discount Is Ready!</h2>
+            <p>Claim your discount by showing this screen at the counter.</p>
+
+            <div class="counter-banner">
+              <b>Counter staff:</b> Please apply a 15% discount for the customer below.
+            </div>
+
+            <div class="coupon">
+              <div class="coupon-label">This coupon belongs to</div>
+              <div class="coupon-name" id="couponName">—</div>
+              <div class="coupon-amount">15%<span>OFF</span></div>
+
+              <div class="coupon-meta">
+                <div class="k">Phone</div><div class="v" id="couponPhone">—</div>
+                <div class="k">Claimed</div><div class="v" id="couponTime">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <button class="button-primary" id="nextVisitorBtn">Next Visitor</button>
+          </div>
+        </div>
+
+        <div class="steps-indicator">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot active"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer-note">Gumazing Hydration • #BeGumazing</div>
+  </div>
+
+  <script>
+    // 👉 Paste your Google Apps Script Web App URL here (it ends in /exec).
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweOERhOb7yrtVSHoki1LgIWvysJVB5IEi-p7un5d6pDGJicHozx_VHzZqJ-2RTsCI/exec";
+
+    // ✅ FULL COUNTRY CODES (as provided earlier)
+    const COUNTRY_CODES = [
+      { name: "Afghanistan", code: "+93", emoji: "🇦🇫" },
+      { name: "Albania", code: "+355", emoji: "🇦🇱" },
+      { name: "Algeria", code: "+213", emoji: "🇩🇿" },
+      { name: "American Samoa", code: "+1-684", emoji: "🇦🇸" },
+      { name: "Andorra", code: "+376", emoji: "🇦🇩" },
+      { name: "Angola", code: "+244", emoji: "🇦🇴" },
+      { name: "Anguilla", code: "+1-264", emoji: "🇦🇮" },
+      { name: "Antarctica", code: "+672", emoji: "🇦🇶" },
+      { name: "Antigua and Barbuda", code: "+1-268", emoji: "🇦🇬" },
+      { name: "Argentina", code: "+54", emoji: "🇦🇷" },
+      { name: "Armenia", code: "+374", emoji: "🇦🇲" },
+      { name: "Aruba", code: "+297", emoji: "🇦🇼" },
+      { name: "Australia", code: "+61", emoji: "🇦🇺" },
+      { name: "Austria", code: "+43", emoji: "🇦🇹" },
+      { name: "Azerbaijan", code: "+994", emoji: "🇦🇿" },
+      { name: "Bahamas", code: "+1-242", emoji: "🇧🇸" },
+      { name: "Bahrain", code: "+973", emoji: "🇧🇭" },
+      { name: "Bangladesh", code: "+880", emoji: "🇧🇩" },
+      { name: "Barbados", code: "+1-246", emoji: "🇧🇧" },
+      { name: "Belarus", code: "+375", emoji: "🇧🇾" },
+      { name: "Belgium", code: "+32", emoji: "🇧🇪" },
+      { name: "Belize", code: "+501", emoji: "🇧🇿" },
+      { name: "Benin", code: "+229", emoji: "🇧🇯" },
+      { name: "Bermuda", code: "+1-441", emoji: "🇧🇲" },
+      { name: "Bhutan", code: "+975", emoji: "🇧🇹" },
+      { name: "Bolivia", code: "+591", emoji: "🇧🇴" },
+      { name: "Bosnia and Herzegovina", code: "+387", emoji: "🇧🇦" },
+      { name: "Botswana", code: "+267", emoji: "🇧🇼" },
+      { name: "Brazil", code: "+55", emoji: "🇧🇷" },
+      { name: "Brunei", code: "+673", emoji: "🇧🇳" },
+      { name: "Bulgaria", code: "+359", emoji: "🇧🇬" },
+      { name: "Burkina Faso", code: "+226", emoji: "🇧🇫" },
+      { name: "Burundi", code: "+257", emoji: "🇧🇮" },
+      { name: "Cabo Verde", code: "+238", emoji: "🇨🇻" },
+      { name: "Cambodia", code: "+855", emoji: "🇰🇭" },
+      { name: "Cameroon", code: "+237", emoji: "🇨🇲" },
+      { name: "Canada", code: "+1", emoji: "🇨🇦" },
+      { name: "Central African Republic", code: "+236", emoji: "🇨🇫" },
+      { name: "Chad", code: "+235", emoji: "🇹🇩" },
+      { name: "Chile", code: "+56", emoji: "🇨🇱" },
+      { name: "China", code: "+86", emoji: "🇨🇳" },
+      { name: "Colombia", code: "+57", emoji: "🇨🇴" },
+      { name: "Comoros", code: "+269", emoji: "🇰🇲" },
+      { name: "Congo (DRC)", code: "+243", emoji: "🇨🇩" },
+      { name: "Congo (Republic)", code: "+242", emoji: "🇨🇬" },
+      { name: "Costa Rica", code: "+506", emoji: "🇨🇷" },
+      { name: "Côte d’Ivoire", code: "+225", emoji: "🇨🇮" },
+      { name: "Croatia", code: "+385", emoji: "🇭🇷" },
+      { name: "Cuba", code: "+53", emoji: "🇨🇺" },
+      { name: "Cyprus", code: "+357", emoji: "🇨🇾" },
+      { name: "Czech Republic", code: "+420", emoji: "🇨🇿" },
+      { name: "Denmark", code: "+45", emoji: "🇩🇰" },
+      { name: "Djibouti", code: "+253", emoji: "🇩🇯" },
+      { name: "Dominica", code: "+1-767", emoji: "🇩🇲" },
+      { name: "Dominican Republic", code: "+1-809", emoji: "🇩🇴" },
+      { name: "Ecuador", code: "+593", emoji: "🇪🇨" },
+      { name: "Egypt", code: "+20", emoji: "🇪🇬" },
+      { name: "El Salvador", code: "+503", emoji: "🇸🇻" },
+      { name: "Equatorial Guinea", code: "+240", emoji: "🇬🇶" },
+      { name: "Eritrea", code: "+291", emoji: "🇪🇷" },
+      { name: "Estonia", code: "+372", emoji: "🇪🇪" },
+      { name: "Eswatini", code: "+268", emoji: "🇸🇿" },
+      { name: "Ethiopia", code: "+251", emoji: "🇪🇹" },
+      { name: "Fiji", code: "+679", emoji: "🇫🇯" },
+      { name: "Finland", code: "+358", emoji: "🇫🇮" },
+      { name: "France", code: "+33", emoji: "🇫🇷" },
+      { name: "French Guiana", code: "+594", emoji: "🇬🇫" },
+      { name: "French Polynesia", code: "+689", emoji: "🇵🇫" },
+      { name: "Gabon", code: "+241", emoji: "🇬🇦" },
+      { name: "Gambia", code: "+220", emoji: "🇬🇲" },
+      { name: "Georgia", code: "+995", emoji: "🇬🇪" },
+      { name: "Germany", code: "+49", emoji: "🇩🇪" },
+      { name: "Ghana", code: "+233", emoji: "🇬🇭" },
+      { name: "Greece", code: "+30", emoji: "🇬🇷" },
+      { name: "Greenland", code: "+299", emoji: "🇬🇱" },
+      { name: "Grenada", code: "+1-473", emoji: "🇬🇩" },
+      { name: "Guadeloupe", code: "+590", emoji: "🇬🇵" },
+      { name: "Guam", code: "+1-671", emoji: "🇬🇺" },
+      { name: "Guatemala", code: "+502", emoji: "🇬🇹" },
+      { name: "Guernsey", code: "+44-1481", emoji: "🇬🇬" },
+      { name: "Guinea", code: "+224", emoji: "🇬🇳" },
+      { name: "Guinea-Bissau", code: "+245", emoji: "🇬🇼" },
+      { name: "Guyana", code: "+592", emoji: "🇬🇾" },
+      { name: "Haiti", code: "+509", emoji: "🇭🇹" },
+      { name: "Honduras", code: "+504", emoji: "🇭🇳" },
+      { name: "Hong Kong", code: "+852", emoji: "🇭🇰" },
+      { name: "Hungary", code: "+36", emoji: "🇭🇺" },
+      { name: "Iceland", code: "+354", emoji: "🇮🇸" },
+      { name: "India", code: "+91", emoji: "🇮🇳" },
+      { name: "Indonesia", code: "+62", emoji: "🇮🇩" },
+      { name: "Iran", code: "+98", emoji: "🇮🇷" },
+      { name: "Iraq", code: "+964", emoji: "🇮🇶" },
+      { name: "Ireland", code: "+353", emoji: "🇮🇪" },
+      { name: "Isle of Man", code: "+44-1624", emoji: "🇮🇲" },
+      { name: "Israel", code: "+972", emoji: "🇮🇱" },
+      { name: "Italy", code: "+39", emoji: "🇮🇹" },
+      { name: "Jamaica", code: "+1-876", emoji: "🇯🇲" },
+      { name: "Japan", code: "+81", emoji: "🇯🇵" },
+      { name: "Jersey", code: "+44-1534", emoji: "🇯🇪" },
+      { name: "Jordan", code: "+962", emoji: "🇯🇴" },
+      { name: "Kazakhstan", code: "+7", emoji: "🇰🇿" },
+      { name: "Kenya", code: "+254", emoji: "🇰🇪" },
+      { name: "Kiribati", code: "+686", emoji: "🇰🇮" },
+      { name: "Kuwait", code: "+965", emoji: "🇰🇼" },
+      { name: "Kyrgyzstan", code: "+996", emoji: "🇰🇬" },
+      { name: "Laos", code: "+856", emoji: "🇱🇦" },
+      { name: "Latvia", code: "+371", emoji: "🇱🇻" },
+      { name: "Lebanon", code: "+961", emoji: "🇱🇧" },
+      { name: "Lesotho", code: "+266", emoji: "🇱🇸" },
+      { name: "Liberia", code: "+231", emoji: "🇱🇷" },
+      { name: "Libya", code: "+218", emoji: "🇱🇾" },
+      { name: "Liechtenstein", code: "+423", emoji: "🇱🇮" },
+      { name: "Lithuania", code: "+370", emoji: "🇱🇹" },
+      { name: "Luxembourg", code: "+352", emoji: "🇱🇺" },
+      { name: "Macau", code: "+853", emoji: "🇲🇴" },
+      { name: "Madagascar", code: "+261", emoji: "🇲🇬" },
+      { name: "Malawi", code: "+265", emoji: "🇲🇼" },
+      { name: "Malaysia", code: "+60", emoji: "🇲🇾" },
+      { name: "Maldives", code: "+960", emoji: "🇲🇻" },
+      { name: "Mali", code: "+223", emoji: "🇲🇱" },
+      { name: "Malta", code: "+356", emoji: "🇲🇹" },
+      { name: "Marshall Islands", code: "+692", emoji: "🇲🇭" },
+      { name: "Martinique", code: "+596", emoji: "🇲🇶" },
+      { name: "Mauritania", code: "+222", emoji: "🇲🇷" },
+      { name: "Mauritius", code: "+230", emoji: "🇲🇺" },
+      { name: "Mayotte", code: "+262", emoji: "🇾🇹" },
+      { name: "Mexico", code: "+52", emoji: "🇲🇽" },
+      { name: "Micronesia", code: "+691", emoji: "🇫🇲" },
+      { name: "Moldova", code: "+373", emoji: "🇲🇩" },
+      { name: "Monaco", code: "+377", emoji: "🇲🇨" },
+      { name: "Mongolia", code: "+976", emoji: "🇲🇳" },
+      { name: "Montenegro", code: "+382", emoji: "🇲🇪" },
+      { name: "Montserrat", code: "+1-664", emoji: "🇲🇸" },
+      { name: "Morocco", code: "+212", emoji: "🇲🇦" },
+      { name: "Mozambique", code: "+258", emoji: "🇲🇿" },
+      { name: "Myanmar", code: "+95", emoji: "🇲🇲" },
+      { name: "Namibia", code: "+264", emoji: "🇳🇦" },
+      { name: "Nauru", code: "+674", emoji: "🇳🇷" },
+      { name: "Nepal", code: "+977", emoji: "🇳🇵" },
+      { name: "Netherlands", code: "+31", emoji: "🇳🇱" },
+      { name: "New Caledonia", code: "+687", emoji: "🇳🇨" },
+      { name: "New Zealand", code: "+64", emoji: "🇳🇿" },
+      { name: "Nicaragua", code: "+505", emoji: "🇳🇮" },
+      { name: "Niger", code: "+227", emoji: "🇳🇪" },
+      { name: "Nigeria", code: "+234", emoji: "🇳🇬" },
+      { name: "Niue", code: "+683", emoji: "🇳🇺" },
+      { name: "North Korea", code: "+850", emoji: "🇰🇵" },
+      { name: "North Macedonia", code: "+389", emoji: "🇲🇰" },
+      { name: "Norway", code: "+47", emoji: "🇳🇴" },
+      { name: "Oman", code: "+968", emoji: "🇴🇲" },
+      { name: "Pakistan", code: "+92", emoji: "🇵🇰" },
+      { name: "Palau", code: "+680", emoji: "🇵🇼" },
+      { name: "Panama", code: "+507", emoji: "🇵🇦" },
+      { name: "Papua New Guinea", code: "+675", emoji: "🇵🇬" },
+      { name: "Paraguay", code: "+595", emoji: "🇵🇾" },
+      { name: "Peru", code: "+51", emoji: "🇵🇪" },
+      { name: "Philippines", code: "+63", emoji: "🇵🇭" },
+      { name: "Poland", code: "+48", emoji: "🇵🇱" },
+      { name: "Portugal", code: "+351", emoji: "🇵🇹" },
+      { name: "Puerto Rico", code: "+1-787", emoji: "🇵🇷" },
+      { name: "Qatar", code: "+974", emoji: "🇶🇦" },
+      { name: "Réunion", code: "+262", emoji: "🇷🇪" },
+      { name: "Romania", code: "+40", emoji: "🇷🇴" },
+      { name: "Russia", code: "+7", emoji: "🇷🇺" },
+      { name: "Rwanda", code: "+250", emoji: "🇷🇼" },
+      { name: "Saint Kitts and Nevis", code: "+1-869", emoji: "🇰🇳" },
+      { name: "Saint Lucia", code: "+1-758", emoji: "🇱🇨" },
+      { name: "Saint Vincent and the Grenadines", code: "+1-784", emoji: "🇻🇨" },
+      { name: "Samoa", code: "+685", emoji: "🇼🇸" },
+      { name: "San Marino", code: "+378", emoji: "🇸🇲" },
+      { name: "São Tomé and Príncipe", code: "+239", emoji: "🇸🇹" },
+      { name: "Saudi Arabia", code: "+966", emoji: "🇸🇦" },
+      { name: "Senegal", code: "+221", emoji: "🇸🇳" },
+      { name: "Serbia", code: "+381", emoji: "🇷🇸" },
+      { name: "Seychelles", code: "+248", emoji: "🇸🇨" },
+      { name: "Sierra Leone", code: "+232", emoji: "🇸🇱" },
+      { name: "Singapore", code: "+65", emoji: "🇸🇬" },
+      { name: "Slovakia", code: "+421", emoji: "🇸🇰" },
+      { name: "Slovenia", code: "+386", emoji: "🇸🇮" },
+      { name: "Solomon Islands", code: "+677", emoji: "🇸🇧" },
+      { name: "Somalia", code: "+252", emoji: "🇸🇴" },
+      { name: "South Africa", code: "+27", emoji: "🇿🇦" },
+      { name: "South Korea", code: "+82", emoji: "🇰🇷" },
+      { name: "South Sudan", code: "+211", emoji: "🇸🇸" },
+      { name: "Spain", code: "+34", emoji: "🇪🇸" },
+      { name: "Sri Lanka", code: "+94", emoji: "🇱🇰" },
+      { name: "Sudan", code: "+249", emoji: "🇸🇩" },
+      { name: "Suriname", code: "+597", emoji: "🇸🇷" },
+      { name: "Sweden", code: "+46", emoji: "🇸🇪" },
+      { name: "Switzerland", code: "+41", emoji: "🇨🇭" },
+      { name: "Syria", code: "+963", emoji: "🇸🇾" },
+      { name: "Taiwan", code: "+886", emoji: "🇹🇼" },
+      { name: "Tajikistan", code: "+992", emoji: "🇹🇯" },
+      { name: "Tanzania", code: "+255", emoji: "🇹🇿" },
+      { name: "Thailand", code: "+66", emoji: "🇹🇭" },
+      { name: "Timor-Leste", code: "+670", emoji: "🇹🇱" },
+      { name: "Togo", code: "+228", emoji: "🇹🇬" },
+      { name: "Tokelau", code: "+690", emoji: "🇹🇰" },
+      { name: "Tonga", code: "+676", emoji: "🇹🇴" },
+      { name: "Trinidad and Tobago", code: "+1-868", emoji: "🇹🇹" },
+      { name: "Tunisia", code: "+216", emoji: "🇹🇳" },
+      { name: "Turkey", code: "+90", emoji: "🇹🇷" },
+      { name: "Turkmenistan", code: "+993", emoji: "🇹🇲" },
+      { name: "Uganda", code: "+256", emoji: "🇺🇬" },
+      { name: "Ukraine", code: "+380", emoji: "🇺🇦" },
+      { name: "United Arab Emirates", code: "+971", emoji: "🇦🇪" },
+      { name: "United Kingdom", code: "+44", emoji: "🇬🇧" },
+      { name: "United States", code: "+1", emoji: "🇺🇸" },
+      { name: "Uruguay", code: "+598", emoji: "🇺🇾" },
+      { name: "Uzbekistan", code: "+998", emoji: "🇺🇿" },
+      { name: "Vanuatu", code: "+678", emoji: "🇻🇺" },
+      { name: "Vatican City", code: "+39-06", emoji: "🇻🇦" },
+      { name: "Venezuela", code: "+58", emoji: "🇻🇪" },
+      { name: "Vietnam", code: "+84", emoji: "🇻🇳" },
+      { name: "Yemen", code: "+967", emoji: "🇾🇪" },
+      { name: "Zambia", code: "+260", emoji: "🇿🇲" },
+      { name: "Zimbabwe", code: "+263", emoji: "🇿🇼" }
+    ];
+
+    // ✅ COMPLETE PHONE RULES (your original full mapping)
+    const PHONE_RULES = {
+      "+971": { min: 9,  max: 9  },
+      "+966": { min: 9,  max: 9  },
+      "+974": { min: 8,  max: 8  },
+      "+968": { min: 8,  max: 8  },
+      "+965": { min: 8,  max: 8  },
+      "+973": { min: 8,  max: 8  },
+      "+20":  { min: 9,  max: 10 },
+      "+91":  { min: 10, max: 10 },
+      "+92":  { min: 10, max: 10 },
+      "+880": { min: 10, max: 10 },
+      "+44":  { min: 9,  max: 10 },
+      "+33":  { min: 9,  max: 9  },
+      "+49":  { min: 10, max: 11 },
+      "+34":  { min: 9,  max: 9  },
+      "+39":  { min: 9,  max: 10 },
+      "+31":  { min: 9,  max: 9  },
+      "+32":  { min: 8,  max: 9  },
+      "+30":  { min: 10, max: 10 },
+      "+46":  { min: 7,  max: 10 },
+      "+41":  { min: 9,  max: 9  },
+      "+351": { min: 9,  max: 9  },
+      "+420": { min: 9,  max: 9  },
+      "+36":  { min: 9,  max: 9  },
+      "+421": { min: 9,  max: 9  },
+      "+386": { min: 8,  max: 8  },
+      "+1":   { min: 10, max: 10 },
+      "+52":  { min: 10, max: 10 },
+      "+55":  { min: 10, max: 11 },
+      "+54":  { min: 10, max: 10 },
+      "+57":  { min: 10, max: 10 },
+      "+58":  { min: 10, max: 10 },
+      "+51":  { min: 9,  max: 9  },
+      "+56":  { min: 8,  max: 9  },
+      "+27":  { min: 9,  max: 9  },
+      "+234": { min: 7,  max: 10 },
+      "+233": { min: 9,  max: 9  },
+      "+254": { min: 9,  max: 9  },
+      "+212": { min: 9,  max: 9  },
+      "+216": { min: 8,  max: 8  },
+      "+213": { min: 8,  max: 9  },
+      "+249": { min: 9,  max: 9  },
+      "+81":  { min: 10, max: 10 },
+      "+82":  { min: 9,  max: 10 },
+      "+86":  { min: 11, max: 11 },
+      "+63":  { min: 10, max: 10 },
+      "+60":  { min: 9,  max: 10 },
+      "+65":  { min: 8,  max: 8  },
+      "+62":  { min: 9,  max: 11 },
+      "+66":  { min: 9,  max: 9  },
+      "+84":  { min: 9,  max: 10 },
+      "+94":  { min: 9,  max: 9  },
+      "+977": { min: 8,  max: 10 },
+      "+353": { min: 9,  max: 9  },
+      "+354": { min: 7,  max: 7  },
+      "+972": { min: 8,  max: 9  },
+      "+380": { min: 9,  max: 9  },
+      "+7":   { min: 10, max: 10 }
+    };
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const couponScreen = document.getElementById('couponScreen');
+
+    const startBtn = document.getElementById('startBtn');
+    const confirmCouponBtn = document.getElementById('confirmCouponBtn');
+    const backToWelcomeBtn = document.getElementById('backToWelcomeBtn');
+    const nextVisitorBtn = document.getElementById('nextVisitorBtn');
+
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const companyInput = document.getElementById('company');
+    const consentCheckbox = document.getElementById('consent');
+    const formError = document.getElementById('formError');
+
+    const couponName = document.getElementById('couponName');
+    const couponPhone = document.getElementById('couponPhone');
+    const couponTime = document.getElementById('couponTime');
+
+    const countryCodeSelect = document.getElementById('countryCode');
+    const DEFAULT_COUNTRY = "Singapore";
+
+    function populateCountryCodes() {
+      if (!countryCodeSelect) return;
+      countryCodeSelect.innerHTML = "";
+      COUNTRY_CODES.forEach(country => {
+        const opt = document.createElement('option');
+        opt.value = country.code;
+        opt.textContent = `${country.emoji} ${country.code} ${country.name}`;
+        if (country.name === DEFAULT_COUNTRY) opt.selected = true;
+        countryCodeSelect.appendChild(opt);
+      });
+    }
+    populateCountryCodes();
+
+    const CLAIM_LABEL = "15% Discount";
+    let currentData = { name: '', phone: '', email: '', company: '', offer: CLAIM_LABEL };
+    let isSubmitting = false;
+    let holdCouponScreen = false;
+
+    function oneTap(el, handler) {
+      if (!el) return;
+      el.addEventListener("pointerup", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handler(e);
+      }, { passive: false });
+    }
+
+    function showSection(section) {
+      if (holdCouponScreen && section !== couponScreen) return;
+      [step1, step2, couponScreen].forEach(sec => sec && sec.classList.add('hidden'));
+      if (!section) return;
+      section.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      nameInput.value = '';
+      phoneInput.value = '';
+      emailInput.value = '';
+      companyInput.value = '';
+      consentCheckbox.checked = false;
+      if (countryCodeSelect) {
+        const idx = COUNTRY_CODES.findIndex(c => c.name === DEFAULT_COUNTRY);
+        countryCodeSelect.selectedIndex = idx >= 0 ? idx : 0;
+      }
+      currentData = { name: '', phone: '', email: '', company: '', offer: CLAIM_LABEL };
+      formError.textContent = "";
+      isSubmitting = false;
+      confirmCouponBtn.disabled = false;
+      confirmCouponBtn.textContent = "Confirm Your Coupon";
+    }
+
+    oneTap(startBtn, () => showSection(step2));
+    oneTap(backToWelcomeBtn, () => showSection(step1));
+
+    oneTap(nextVisitorBtn, () => {
+      holdCouponScreen = false;
+      resetForm();
+      showSection(step1);
+    });
+
+    oneTap(confirmCouponBtn, () => {
+      if (isSubmitting) return;
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const company = companyInput.value.trim();
+      const countryCode = countryCodeSelect ? countryCodeSelect.value : "";
+      const localPhoneDigits = phoneInput.value.trim().replace(/\D/g, "");
+
+      if (!name || !localPhoneDigits || !email) {
+        formError.textContent = "Please fill in name, mobile and email.";
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        formError.textContent = "Please enter a valid email address.";
+        return;
+      }
+
+      const rule = PHONE_RULES[countryCode] || { min: 6, max: 15 };
+      if (localPhoneDigits.length < rule.min || localPhoneDigits.length > rule.max) {
+        formError.textContent = `Please enter a valid phone number (${rule.min}–${rule.max} digits after ${countryCode || "country code"}).`;
+        return;
+      }
+
+      if (!consentCheckbox.checked) {
+        formError.textContent = "Please check the box to confirm you have subscribed to receive emails.";
+        return;
+      }
+
+      formError.textContent = "";
+
+      const fullPhone = countryCode ? `${countryCode} ${localPhoneDigits}` : localPhoneDigits;
+      currentData.name = name;
+      currentData.phone = "'" + fullPhone;
+      currentData.email = email;
+      currentData.company = company;
+      currentData.offer = CLAIM_LABEL;
+
+      submitData();
+    });
+
+    async function submitData() {
+      isSubmitting = true;
+      confirmCouponBtn.disabled = true;
+      confirmCouponBtn.textContent = "Confirming...";
+
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("script.google.com") === -1) {
+        formError.textContent = "This form is not connected to the Google Sheet yet. Please add the Web App URL.";
+        isSubmitting = false;
+        confirmCouponBtn.disabled = false;
+        confirmCouponBtn.textContent = "Confirm Your Coupon";
+        return;
+      }
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ ...currentData, page: location.href })
+        });
+
+        couponName.textContent = currentData.name || "—";
+        couponPhone.textContent = (currentData.phone || "—").replace(/^'/, "");
+        couponTime.textContent = new Date().toLocaleString([], { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        showSection(couponScreen);
+        holdCouponScreen = true;
+
+      } catch (err) {
+        console.error(err);
+        formError.textContent = "Network error – please try again.";
+        isSubmitting = false;
+        confirmCouponBtn.disabled = false;
+        confirmCouponBtn.textContent = "Confirm Your Coupon";
+      }
+    }
+
+    window.addEventListener("beforeunload", (e) => {
+      if (holdCouponScreen) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    });
+  </script>
+</body>
+</html>
